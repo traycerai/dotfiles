@@ -110,6 +110,10 @@ if [ ${last_system} -gt ${system_seconds} ] || [ $force_update -eq 1 ]; then
 	nvim +PlugUpgrade +PlugClean! +PlugUpdate +PlugInstall +CocUpdateSync +TSUpdateSync +qall
 	update_error nvim $?
 
+  # update vscode extensions
+  revolver update "Updating vscode extensions..."
+  $HOME/sw/bin/vscode_extensions.sh
+
   revolver update "Updating npm packages..."
 	npm update && npm upgrade && npm audit fix --force && npm prune --production --force
 	update_error npm $?

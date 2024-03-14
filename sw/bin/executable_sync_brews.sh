@@ -297,6 +297,7 @@ if [[ $OSTYPE == 'darwin'* ]]; then
 		zoom
 		rectangle-pro
 		swiftdefaultappsprefpane # for setting several macOS properties such as default app for opening plaintext files
+		visual-studio-code
     # copyq removed as it likely has memory leak on Apple Silicon
 	)
   revolver stop
