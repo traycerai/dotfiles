@@ -54,7 +54,7 @@
   "coc.source.zsh.priority": 99,
   "go.checkForUpdates": "install",
   "go.goplsOptions": {
-    "local": "fluxninja.com",
+    "local": "traycer.ai",
     "gofumpt": true,
     "staticcheck": true,
     "semanticTokens": true,
@@ -163,9 +163,7 @@
   },
   "ltex.diagnosticSeverity": "warning",
   "ltex.dictionary": {
-    "en-US": [
-      ":~/Work/fluxninja/aperture/.github/styles/Vocab/FluxNinja/accept.txt"
-    ]
+    "en-US": []
   },
   "ltex.completionEnabled": true,
   /*  "ltex.enabled": [
@@ -197,14 +195,9 @@
   "cSpell.showStatus": false,
   "cSpell.allowCompoundWords": true,
   "cSpell.userWords": [],
-  "cSpell.dictionaryDefinitions": [
-    {
-      "name": "FluxNinja",
-      "path": "${userHome}/Work/fluxninja/aperture/.github/styles/Vocab/FluxNinja/accept.txt"
-    }
-  ],
+  "cSpell.dictionaryDefinitions": [],
   "cSpell.dictionaries": [
-    "FluxNinja",
+    "Traycer",
     "wordsEn",
     "en_US",
     "softwareTerms",
