@@ -375,6 +375,7 @@ revolver update 'Installing npm packages...'
 npm i -q -g bash-language-server@latest
 npm i -q -g dockerfile-language-server-nodejs@latest
 npm i -q -g prettier@latest
+npm i -q -g @vscode/vsce@latest
 
 revolver update 'Installing python packages...'
 #python stuff
