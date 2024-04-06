@@ -16,3 +16,11 @@ for dir in "${PRECOMMIT_DIRS[@]}"; do
 		popd >/dev/null || continue
 	fi
 done
+
+pushd ~/Work/traycerai/traycer >/dev/null || exit 1
+npm install && npm run build
+popd >/dev/null || exit 1
+
+pushd ~/Work/traycerai/traycer/code-explorer-agent >/dev/null || exit 1
+npm run local_deploy
+popd >/dev/null || exit 1
