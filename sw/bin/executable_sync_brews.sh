@@ -391,7 +391,7 @@ pip3 install --quiet tiktoken
 # gh extensions
 gh extension install dlvhdr/gh-dash
 gh extension install github/gh-copilot
-gh extension update --all
+gh extension upgrade --all --force
 
 revolver stop
 tput cnorm
