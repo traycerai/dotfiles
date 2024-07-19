@@ -256,10 +256,14 @@ function @yazpt_segment_excuse() {
 # check whether exit code of last command was not 0 or 127 or 130
 local code="$yazpt_state[exit_code]"
 local excuse_msg=''
-if [[ $code -ne 0 && $code -ne 127 && "$yazpt_state[exit_code]" -ne 130 ]] && $INSULTS_ENABLED; then
-  local excuse_msg='💥uh-ho💥 '
-  excuse_msg+="$(excuse)"
-  excuse_msg+=$'\n'
+if [[ $code -ne 0 && $code -ne 127 && "$yazpt_state[exit_code]" -ne 130 ]]; then
+  excuse_msg='💥uh-ho💥 '
+  if $INSULTS_ENABLED; then
+    excuse_msg+="$(excuse)"
+    excuse_msg+=$'\n'
+  else
+    excuse_msg+=$'\n'
+  fi
 fi
 yazpt_state[excuse]=$excuse_msg
 }
