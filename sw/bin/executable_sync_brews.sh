@@ -44,7 +44,7 @@ fi
 PACKAGES+=(
   chezmoi
   zsh
-	exa
+	eza
 	dust
 	ncdu
 	duf
