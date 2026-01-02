@@ -25,17 +25,33 @@ require'nvim-web-devicons'.setup {
  strict = true;
 }
 
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "go", "rust", "c", "python", "lua", "javascript", "bash", "cpp", "css", "dockerfile", "gomod", "gowork", "graphql", "hcl", "http", "html", "java", "json", "proto", "regex", "rego", "toml", "tsx", "typescript", "vim", "yaml", "make"},
-  sync_install = false,
-  highlight = {
-    enable = true,
-    disable = {"yaml"},
-  },
-  indent = {
-    enable = true,
-  }
+-- Configure treesitter
+require'nvim-treesitter'.setup {
+  install_dir = vim.fn.stdpath('data') .. '/site'
 }
+
+-- Install treesitter parsers
+require'nvim-treesitter'.install {
+  "go", "rust", "c", "python", "lua", "javascript", "bash", "cpp", "css", 
+  "dockerfile", "gomod", "gowork", "graphql", "hcl", "http", "html", "java", 
+  "json", "proto", "regex", "rego", "toml", "tsx", "typescript", "vim", "make"
+}
+
+-- Enable treesitter highlighting for supported languages
+local ts_languages = {
+  "go", "rust", "c", "python", "lua", "javascript", "bash", "cpp", "css",
+  "dockerfile", "graphql", "hcl", "html", "java", "json", "proto", "toml",
+  "tsx", "typescript", "vim", "make"
+}
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = ts_languages,
+  callback = function()
+    vim.treesitter.start()
+    -- Enable treesitter-based indentation (experimental)
+    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  end,
+})
 
 require('telescope').load_extension('fzf')
 
