@@ -137,7 +137,14 @@ func preexec() {
   # in $TMUX from the parent session being set without tmux being
   # connected.
   if [ -n "$TMUX" ] && tmux ls >/dev/null 2>/dev/null; then
-    eval "$(tmux show-environment -s | grep -v "^unset")"
+    # Safely import tmux environment variables without using eval
+    # This avoids parsing errors when environment variables contain special characters
+    while IFS='=' read -r key value; do
+      # Skip unset commands and empty lines
+      [[ -z "$key" || "$key" == "unset"* ]] && continue
+      # Only set if key is valid (alphanumeric and underscores)
+      [[ "$key" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]] && export "$key=$value" 2>/dev/null
+    done < <(tmux show-environment -s 2>/dev/null)
     local uuid="$(tmux show-environment -g TMUX_UUID 2>/dev/null)"
     # check whether $LAST_TMUX_UUID is set
     if [[ -z "$LAST_TMUX_UUID" ]]; then
@@ -626,8 +633,10 @@ unset ASCII_WELCOME_ENABLED
 unset ASCII_WELCOME_SNOOZE
 unset CNF_TF_ENABLED
 
-# run $HOME/sw/bin/autoupdate.zsh by eval it's content
-eval "$(cat $HOME/sw/bin/autoupdate.zsh)"
+# run $HOME/sw/bin/autoupdate.zsh by sourcing it (safer than eval)
+if [ -f "$HOME/sw/bin/autoupdate.zsh" ]; then
+  source "$HOME/sw/bin/autoupdate.zsh"
+fi
 
 source $HOME/.aliases
 
