@@ -1,0 +1,72 @@
+#!/bin/bash
+
+function revolver_stop() {
+	revolver stop
+	tput cnorm
+}
+
+# Check for --no-verify option
+no_verify=""
+if [ "$1" == "--no-verify" ]; then
+	no_verify="--no-verify"
+	shift
+fi
+
+# Ensure we are in an active merge
+if ! git rev-parse -q --verify MERGE_HEAD >/dev/null; then
+	echo "No merge in progress. Use git_ship for regular commits."
+	exit 1
+fi
+
+# Merge still has unresolved conflicts
+if git status | grep -q 'You have unmerged paths'; then
+	echo "Merge has unresolved conflicts. Resolve and stage files before continuing."
+	exit 1
+fi
+
+# show the list of modified git files that will be committed
+# this is mostly staged files in a merge state
+echo " == Modified files == "
+git status --short --untracked-files=no
+
+# empty line
+echo ""
+
+# list only the untracked files and exclude all tracked files from the list
+echo " == Untracked files == "
+git ls-files --others --exclude-standard
+
+if ! gum confirm "Commit merge and push these changes?"; then
+	echo "Aborting"
+	exit 1
+fi
+
+tput civis
+revolver --style 'dots2' start 'Committing merge...'
+
+# Keep retrying merge commit until it succeeds.
+i=0
+while true; do
+	i=$((i + 1))
+	revolver update "Committing merge... Try #$i"
+
+	START=$(date +%s)
+	git commit --no-edit $no_verify
+	exit_code=$?
+	END=$(date +%s)
+	DIFF=$((END - START))
+
+	if [ $exit_code -eq 0 ]; then
+		echo "Current iteration took $DIFF seconds"
+		break
+	fi
+
+	echo "Failed attempt took $DIFF seconds"
+	echo "Commit failed, retrying"
+	sleep 1
+done
+
+revolver update "Pushing changes..."
+git push -u -q origin "$(git rev-parse --abbrev-ref HEAD)"
+
+revolver_stop
