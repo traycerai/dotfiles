@@ -185,9 +185,6 @@ func zshexit() {
 rm /tmp/gh_$$ &>/dev/null
 # remove watch on home directory
 watchman watch-del $HOME >/dev/null 
-figlet -w 80 Traycer zsh
-cowsay -d "zsh exiting... see you later..."
-sleep 0.5
 }
 
 # configure zsh to show hidden files in auto-completion
