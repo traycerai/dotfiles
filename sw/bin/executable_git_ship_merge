@@ -62,6 +62,18 @@ while true; do
 	fi
 
 	echo "Failed attempt took $DIFF seconds"
+	if [ $DIFF -lt 4 ]; then
+		echo "Commit failed instantly, aborting"
+		revolver_stop
+		exit 1
+	fi
+	# break after 3 attempts
+	if [ $i -eq 3 ]; then
+		echo "Commit failed after 3 attempts, aborting"
+		revolver_stop
+		exit 1
+	fi
+
 	echo "Commit failed, retrying"
 	sleep 1
 done
