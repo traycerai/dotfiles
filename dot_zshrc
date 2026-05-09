@@ -73,8 +73,11 @@ if [[ -z "$START_TMUX" ]]; then
   export START_TMUX=true
 fi
 
-# check whether tmux command exists
-if [[ -x "$(command -v tmux)" ]]; then
+# check whether tmux command exists. Skip the whole block when stdout/stdin
+# isn't a TTY (launchd, shell-env probes from VS Code/Cursor/Traycer, any
+# `zsh -ilc` from a non-interactive parent) — both `fzf` and `tmux -u
+# new-session` need a real terminal and would block forever otherwise.
+if [[ -x "$(command -v tmux)" ]] && [[ -t 0 ]] && [[ -t 1 ]]; then
   if $START_TMUX; then
     export START_TMUX=false
     set_terminal
