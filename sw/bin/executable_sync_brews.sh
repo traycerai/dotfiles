@@ -17,6 +17,7 @@ brew tap bufbuild/buf
 brew tap tilt-dev/tap
 brew tap noahgorstein/tap
 brew tap fluxninja/aperture
+brew tap oven-sh/bun
 
 if [[ $OSTYPE == 'darwin'* ]]; then
 	brew tap homebrew/cask-fonts
@@ -160,6 +161,7 @@ PACKAGES+=(
   vale
   poetry
   pnpm
+  bun
 )
 
 if [[ $OSTYPE == 'darwin'* ]]; then

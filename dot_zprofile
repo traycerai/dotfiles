@@ -15,5 +15,9 @@ export PATH=$HOME/sw/bin:$HOME/go/bin:$HOME/.cargo/bin:$(brew --prefix)/opt/pyth
 export JDK_HOME=$HOMEBREW_PREFIX/opt/openjdk@17
 export JAVA_HOME=$HOMEBREW_PREFIX/opt/openjdk@17
 
+# bun (https://bun.com/docs/installation#add-bun-to-your-path)
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 # export a variable marking zprofile as sourced
 export ZPROFILE_SOURCED=1
