@@ -194,7 +194,9 @@ watchman watch-del $HOME >/dev/null
 setopt globdots
 setopt interactivecomments
 
-eval $(thefuck --alias)
+# thefuck is only useful in an interactive shell; its command-not-found handler
+# calls getch() and crashes on termios in non-interactive shells (no TTY).
+[[ $- == *i* ]] && eval $(thefuck --alias)
 
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
@@ -555,7 +557,10 @@ if [ -z "$CNF_TF_ENABLED" ]; then
   CNF_TF_ENABLED=true
 fi
 
-if $CNF_TF_ENABLED; then
+# Only wire the command-not-found -> thefuck handler interactively. In a
+# non-interactive shell (e.g. agent/CI), thefuck's getch() hits termios on a
+# missing TTY and aborts the command with a traceback.
+if [[ $- == *i* ]] && $CNF_TF_ENABLED; then
   source $HOME/sw/assets/zsh_cnf.zsh
 fi
 
@@ -587,7 +592,7 @@ if $AUTO_CLEAR_CACHES; then
   fi
 fi
 
-if $AUTO_CLEAR_CACHES; then
+if [[ $- == *i* ]] && $AUTO_CLEAR_CACHES; then
   # ask the user if they want to clear go installation as it bloats over time
   printf "Go installation grows over time and it's recommended to clear it periodically.\n"
   if gum confirm "Do you want to clear the go installation?"; then
@@ -621,7 +626,7 @@ if $ASCII_WELCOME_ENABLED; then
 fi
 
 # check whether ascii art is enabled
-if $ASCII_WELCOME_ENABLED; then
+if [[ $- == *i* ]] && $ASCII_WELCOME_ENABLED; then
   # print a random cowsay using fortune using only *.cow files located at $(brew --prefix)/share/cows
   fortune | cowsay -f $(find $(brew --prefix)/share/cowsay/cows/ -name "*.cow" | shuf -n 1)
   (timeout 2 WTTR_PARAMS="1" ~/sw/bin/wttr.sh ;\
