@@ -1,0 +1,23 @@
+# Self-heal $fpath against a stale FPATH inherited from a long-lived parent.
+#
+# zsh prefers an inherited $FPATH over its compiled-in default. A process that
+# outlives a `brew upgrade zsh` (a tmux server, an IDE, a detached session)
+# keeps exporting the OLD versioned Cellar path, e.g.
+#   /opt/homebrew/Cellar/zsh/5.9/share/zsh/functions
+# which the upgrade deletes. Children then inherit a dead fpath entry and
+# autoload of is-at-least / add-zsh-hook / colors / compinit fails, cascading
+# into zinit errors and "compdef replay" / "complete: command not found".
+#
+# Fix: pin Homebrew's version-independent functions symlink (always points at
+# the current build) and the standard site-functions dir, then drop any
+# inherited entries that no longer exist. Runs for every shell, before
+# .zprofile/.zshrc, so zinit always loads against a valid fpath.
+
+for _hb in /opt/homebrew /usr/local /home/linuxbrew/.linuxbrew; do
+  [[ -d $_hb/share/zsh/functions ]] && fpath=( $_hb/share/zsh/functions $fpath )
+  [[ -d $_hb/share/zsh/site-functions ]] && fpath=( $_hb/share/zsh/site-functions $fpath )
+done
+unset _hb
+
+fpath=( ${^fpath}(N/) )   # keep only directories that actually exist
+typeset -gU fpath         # de-duplicate, preserving order
