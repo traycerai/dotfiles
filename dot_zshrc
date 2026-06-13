@@ -315,8 +315,14 @@ function configure_yazpt {
   YAZPT_EXECTIME_MIN_SECONDS=1
 }
 
+# NOTE: do not call yazpt_precmd from this atload. yazpt registers its own
+# precmd hook on load (yazpt.zsh-theme), and wait'!0's '!' resets the prompt
+# after load. Calling yazpt_precmd here renders the prompt *inside* zinit's
+# turbo scheduler; yazpt's git segment then does a `cd` (worktree path) which
+# fires the chpwd hook -> @zinit-scheduler -> loads next plugin -> renders
+# again -> ... recursing until FUNCNEST ("maximum nested function level").
 zinit ice wait'!0' atload'source "$yazpt_default_preset_file"; \
-  configure_yazpt;yazpt_precmd' nocd lucid
+  configure_yazpt' nocd lucid
 zinit light jakshin/yazpt
 
 # install git-extras via zinit instead of brew
